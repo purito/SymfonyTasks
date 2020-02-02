@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 100%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper col-lg-12 col-md-12 col-sm-12">
+    <div class="float-right mb-5">Esti logat ca {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a></div>
+    <div class="w-100 float-left">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {{ form(form) }}
+    </div>
+</div>
+{% endblock %}
