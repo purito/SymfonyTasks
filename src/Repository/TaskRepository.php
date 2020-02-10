@@ -47,4 +47,35 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
     */
+    
+    /**
+     * @return task[]
+     */
+    public function findAllTasksByUser($user)
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = '
+            SELECT t.id, t.name, t.deadline, t.description, t.priority_id, t.status_id
+            FROM task as t
+            WHERE t.user_id = :user OR :user = (Select user_id
+                From task_user
+                Where task_id = t.id)
+            ORDER BY t.id DESC
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array('user' => $user));
+        return $stmt->fetchAll();
+    }
+    
+    public function findAllTasks()
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t.id, t.name as task_name, u.name, u.email, t.deadline')
+            ->innerJoin("t.user", 'u')
+            ->orderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

@@ -1,7 +1,3 @@
-#index:
- #   path: /
-  #  controller: App\Controller\SecurityController::login
-
 easy_admin_bundle:
     resource: '@EasyAdminBundle/Controller/EasyAdminController.php'
     prefix: /admin

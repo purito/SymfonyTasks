@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 use App\Entity\Task;
-use App\Entity\User;
-use App\Entity\UsersTask;
 use App\Form\Type\TaskType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 class DashboardController extends AbstractController
 {
     /**
@@ -19,28 +17,16 @@ class DashboardController extends AbstractController
         $user = $this->getUser();
         $form = $this->createForm(TaskType::class, $task);
         
+        $entityManager = $this->getDoctrine()->getManager();
+        $tasks = $entityManager->getRepository(Task::class)->findAllTasksByUser($user->getId());
+        dump($tasks);
+        
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
-            /*var_dump($form->getData());
-            exit();*/
-            $task->setUser($user);
+            $task->setUserId($user->getId());
             $task->setAddedOn(new \DateTime());
             
-            //$executor = $form->get("executor")->getData();
-            
-            /*$executor = $form->get('executor')->getData();
-            if($executor){
-                foreach($executor as $each_record){
-                    var_dump($each_record);
-                    exit();
-                }
-            }*/
-            /*$usersTask = new UsersTask();
-            $usersTask->setTask($task);
-            $usersTask->setUser($user);*/
-            
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
             

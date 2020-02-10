@@ -41,19 +41,14 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="user")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Task", mappedBy="user")
      */
-    private $tasks;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UsersTask", mappedBy="user")
-     */
-    private $usersTasks;
+    private $task;
+    
 
     public function __construct()
     {
-        $this->tasks = new ArrayCollection();
-        $this->usersTasks = new ArrayCollection();
+        $this->task = new ArrayCollection();
     }
     
     public function __toString()
@@ -159,16 +154,16 @@ class User implements UserInterface
     /**
      * @return Collection|Task[]
      */
-    public function getTasks(): Collection
+    public function getTask(): Collection
     {
-        return $this->tasks;
+        return $this->task;
     }
 
     public function addTask(Task $task): self
     {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks[] = $task;
-            $task->setUser($this);
+        if (!$this->task->contains($task)) {
+            $this->task[] = $task;
+            $task->addUser($this);
         }
 
         return $this;
@@ -176,43 +171,9 @@ class User implements UserInterface
 
     public function removeTask(Task $task): self
     {
-        if ($this->tasks->contains($task)) {
-            $this->tasks->removeElement($task);
-            // set the owning side to null (unless already changed)
-            if ($task->getUser() === $this) {
-                $task->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|UsersTask[]
-     */
-    public function getUsersTasks(): Collection
-    {
-        return $this->usersTasks;
-    }
-
-    public function addUsersTask(UsersTask $usersTask): self
-    {
-        if (!$this->usersTasks->contains($usersTask)) {
-            $this->usersTasks[] = $usersTask;
-            $usersTask->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUsersTask(UsersTask $usersTask): self
-    {
-        if ($this->usersTasks->contains($usersTask)) {
-            $this->usersTasks->removeElement($usersTask);
-            // set the owning side to null (unless already changed)
-            if ($usersTask->getUser() === $this) {
-                $usersTask->setUser(null);
-            }
+        if ($this->task->contains($task)) {
+            $this->task->removeElement($task);
+            $task->removeUser($this);
         }
 
         return $this;

@@ -1,0 +1,13 @@
+easy_admin:
+    site_name: 'Management'
+    entities:
+        #- App\Entity\Task
+        Task:
+            controller: App\Controller\TaskController
+            class: App\Entity\Task
+            list:
+                fields: ['id', 'name', 'deadline', 'description', 'priority', 'status']
+                filters: ['name', 'deadline', 'description', 'priority', 'status']
+            form:
+                fields: ['name', 'description', 'priority', 'status', { property: 'user', label: 'Executors' }, 'deadline']
+                    

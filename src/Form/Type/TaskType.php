@@ -44,34 +44,13 @@ class TaskType extends AbstractType
             ->add('description', TextareaType::class, [
                 'attr' => ['class' => 'form-control mb-2'],
             ])
-            /*->add('executor', EntityType::class, [
+            ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'name',
-                'mapped' => false,
-                'attr' => ['class' => 'form-control mb-2'],
-                'multiple' => true,
-                'expanded' => true,
-                'data' => array($this->security->getUser())
-                "mapped" => false,
-                "multiple" => true,
-                "attr" => array(
-                    'class' => "form-control"
-                ),
-                'choices'  => array(
-                    'Blogger' => 'ROLE_BLOGGER',
-                    'Administrator' => 'ROLE_ADMIN'
-                )
-            ])*/
-            ->add('usersTasks', EntityType::class, [
-                'class' => User::class,
-                //'mapped' => false,
                 'multiple' => true,
                 'required' => true,
                 'label' => false,
-                'attr' => ['class' => 'square_selectize selectize'],
-                /*'constraints' => [
-                    new Assert\NotBlank()
-                ],*/
+                'attr' => ['class' => 'form-control mb-2'],
+                'data' => array($this->security->getUser())
             ])
             ->add('priority', ChoiceType::class, [
                 'attr' => ['class' => 'form-control mb-2'],

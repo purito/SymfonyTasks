@@ -34,34 +34,35 @@ class Task
     private $description;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $priority;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $status;
-
-    /**
      * @ORM\Column(type="date")
      */
     private $added_on;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $user_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="task")
      */
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UsersTask", mappedBy="task")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Priority", inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $usersTasks;
+    private $priority;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Status", inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
 
     public function __construct()
     {
-        $this->usersTasks = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,30 +106,6 @@ class Task
         return $this;
     }
 
-    public function getPriority(): ?int
-    {
-        return $this->priority;
-    }
-
-    public function setPriority(int $priority): self
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    public function getStatus(): ?int
-    {
-        return $this->status;
-    }
-
-    public function setStatus(int $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     public function getAddedOn(): ?\DateTimeInterface
     {
         return $this->added_on;
@@ -140,46 +117,65 @@ class Task
 
         return $this;
     }
-
-    public function getUser(): ?User
+    
+    public function getUserId(): ?int
     {
-        return $this->user;
+        return $this->user_id;
     }
 
-    public function setUser(?User $user): self
+    public function setUserId(int $user_id): self
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
 
         return $this;
     }
 
     /**
-     * @return Collection|UsersTask[]
+     * @return Collection|User[]
      */
-    public function getUsersTasks(): Collection
+    public function getUser(): Collection
     {
-        return $this->usersTasks;
+        return $this->user;
     }
 
-    public function addUsersTask(UsersTask $usersTask): self
+    public function addUser(User $user): self
     {
-        if (!$this->usersTasks->contains($usersTask)) {
-            $this->usersTasks[] = $usersTask;
-            $usersTask->setTask($this);
+        if (!$this->user->contains($user)) {
+            $this->user[] = $user;
         }
 
         return $this;
     }
 
-    public function removeUsersTask(UsersTask $usersTask): self
+    public function removeUser(User $user): self
     {
-        if ($this->usersTasks->contains($usersTask)) {
-            $this->usersTasks->removeElement($usersTask);
-            // set the owning side to null (unless already changed)
-            if ($usersTask->getTask() === $this) {
-                $usersTask->setTask(null);
-            }
+        if ($this->user->contains($user)) {
+            $this->user->removeElement($user);
         }
+
+        return $this;
+    }
+
+    public function getPriority(): ?Priority
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(?Priority $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
